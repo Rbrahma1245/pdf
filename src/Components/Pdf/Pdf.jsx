@@ -1,31 +1,23 @@
 import { Component } from "react";
-import "./Pdf.scss";
-import Display from "../Display";
+import Header from "../Header/Header";
+import Homepage from "../Homepage";
 
-class Pdf extends Component {
-  constructor() {
-    super();
-    this.state = {
-      file: null,
-      pageNo: 1,
-    };
+export class Pdf extends Component {
+  constructor(){
+    super()
+    this.state = {image : null}
   }
 
 
+  addImage = (imageUrl) => {
+    this.setState({image : imageUrl});
+  };
   render() {
+    // console.log(this.state.image);
     return (
       <div>
-        <h2>Upload PDF</h2>
-        <div className="display-container">
-          <div>
-            <input
-              type="file"
-              accept=".pdf"
-              onChange={this.validatePDF.bind(this)}
-            />
-          </div>
-        </div>
-        <Display file={this.state.file} />
+        <Header addImage={this.addImage}/>
+        <Homepage  image = {this.state.image}/>
       </div>
     );
   }
