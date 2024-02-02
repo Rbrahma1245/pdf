@@ -27,7 +27,13 @@ class Display extends Component {
       filename: "downloaded_pdf.pdf",
       image: { type: "jpeg", quality: 1 },
       html2canvas: { scale: 2 },
-      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+      jsPDF: {
+        unit: "mm",
+        format: "a4",
+        orientation: "portrait",
+        font: "helvetica", // You can change the font family
+        fontSize: 16,
+      },
     });
   };
 
@@ -35,11 +41,11 @@ class Display extends Component {
     console.log(this.props);
 
     return (
-      <div style={{ width: "80%" }} id="pdf-container">
+      <div style={{ width: "80%" }}>
         <Worker workerUrl="https://unpkg.com/pdfjs-dist@2.15.349/build/pdf.worker.js">
           {this.props.pdfFile ? (
             <>
-              <div style={{ position: "relative" }}>
+              <div style={{ position: "relative" }} id="pdf-container">
                 {/* PDF Viewer */}
                 <Viewer fileUrl={this.props.pdfFile} />
 
