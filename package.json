@@ -14,8 +14,10 @@
     "@react-pdf-viewer/default-layout": "^3.12.0",
     "@react-pdf/renderer": "^3.3.4",
     "pdfjs-dist": "2.15.349",
+    "re-resizable": "^6.9.11",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-draggable": "^4.4.6",
     "react-icons": "^5.0.1",
     "react-pdf": "^7.7.0",
     "sass": "^1.70.0"
