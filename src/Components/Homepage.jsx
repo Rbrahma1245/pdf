@@ -1,6 +1,9 @@
 import { Component } from "react";
 import "./Pdf/Pdf.scss";
 import Display from "./Display";
+// import Swal from "sweetalert2";
+
+
 
 class Homepage extends Component {
   constructor() {
@@ -16,18 +19,27 @@ class Homepage extends Component {
     let fileType = ["application/pdf"];
 
     if (selectedFile) {
-      if (selectedFile && fileType.includes(selectedFile.type)) {
-        let reader = new FileReader();
+        if (selectedFile && fileType.includes(selectedFile.type)) {
+            let reader = new FileReader();
 
-        reader.readAsDataURL(selectedFile);
-        reader.onload = (e) => {
-          this.setState({ pdfFile: e.target.result });
-        };
-      } else {
-        this.setState({ pdfFile: null });
-      }
+            reader.onload = (e) => {
+                const arrayBuffer = e.target.result;
+                const blob = new Blob([arrayBuffer], { type: "application/pdf" });
+                this.setState({ pdfFile: blob });
+            };
+
+            reader.readAsArrayBuffer(selectedFile);
+        } else {
+          // Swal.fire({
+          //   icon: 'error',
+          //   title: 'Invalid File',
+          //   text: 'Please select a valid PDF file.',
+          // });
+            this.setState({ pdfFile: null });
+            e.target.value = "";
+        }
     } else {
-      console.log("please select a file");
+        console.log("please select a file");
     }
   }
 
