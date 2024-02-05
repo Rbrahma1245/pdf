@@ -140,18 +140,22 @@ class Display extends Component {
                   )}
                 </Page>
 
-                <p>
-                  Page {this.state.pageNumber} of {this.state.numPages}
-                </p>
+                <div className="box-footer">
+                  <p>
+                    Page {this.state.pageNumber} of {this.state.numPages}
+                  </p>
+                  <div>
+                    <button className="prevbtn" onClick={this.handlePrevPage.bind(this)} disabled={this.state.pageNumber === 1}>Prev</button>
+                    <button className="nextbtn" onClick={this.handleNextPage.bind(this)} disabled={this.state.pageNumber == this.state.numPages}>Next</button>
 
-                <button onClick={this.handlePrevPage.bind(this)} disabled={this.state.pageNumber === 1}>Prev</button>
-                <button onClick={this.handleNextPage.bind(this)} disabled={this.state.pageNumber == this.state.numPages}>Next</button>
+                  </div>
 
+                </div>
               </Document>
             </div>
 
-            <div style={{ marginTop: 10 }}>
-              <button onClick={this.handleDownloadPDF.bind(this)}>
+            <div className="downloadbtn-box" >
+              <button className="downloadbtn" onClick={this.handleDownloadPDF.bind(this)}>
                 Download PDF
               </button>
             </div>
