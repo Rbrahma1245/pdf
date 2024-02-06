@@ -26,7 +26,7 @@ class Display extends Component {
     };
   }
   async handleDownloadPDF() {
-    const { pdfFile } = this.props;
+    const { pdfFile, image } = this.props;
 
     if (!pdfFile) {
       console.error("PDF file is not available.");
@@ -37,30 +37,28 @@ class Display extends Component {
       const pdfBytes = new Uint8Array(await pdfFile.arrayBuffer());
       const pdfDoc = await PDFDocument.load(pdfBytes);
 
-      // const imageBytes = await fetch(this.props.image.url).then((res) => res.arrayBuffer());
+      if (image && image.url) {
+        // Embed the image
+        const image = await pdfDoc.embedPng(image.url);
 
-      // Embed the image
-      const image = await pdfDoc.embedPng(this.props.image.url);
+        pdfDoc.getPages().forEach((page) => {
+          const { width, height } = page.getSize();
 
-      console.log(pdfDoc, "from pdf doc");
+          console.log(width, height, "from pdf");
 
-      pdfDoc.getPages().forEach((page) => {
-        const { width, height } = page.getSize();
+          const x = this.state.imagePosition.x;
+          const y = this.state.imagePosition.y;
+          const imageWidth = this.state.imageSize.width;
+          const imageHeight = this.state.imageSize.height;
 
-        console.log(width, height, "from pdf");
-
-        const x = this.state.imagePosition.x;
-        const y = this.state.imagePosition.y;
-        const imageWidth = this.state.imageSize.width;
-        const imageHeight = this.state.imageSize.height;
-
-        page.drawImage(image, {
-          x: x,
-          y: y,
-          width: imageWidth,
-          height: imageHeight,
+          page.drawImage(image, {
+            x: x,
+            y: y,
+            width: imageWidth,
+            height: imageHeight,
+          });
         });
-      });
+      }
 
       const modifiedPdfBytes = await pdfDoc.save();
       saveAs(

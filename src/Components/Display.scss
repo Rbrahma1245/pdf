@@ -3,7 +3,7 @@
 @import "../styles/mixin";
 
 .container-box {
-  @extend %flex-center;
+  @extend %flex;
   position: relative;
 
   .box-footer {
