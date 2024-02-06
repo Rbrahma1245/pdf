@@ -1,6 +1,8 @@
 import { Component } from "react";
-import "./Pdf/Pdf.scss";
 import Display from "./Display";
+import Swal from "sweetalert2";
+import "./Display.scss";
+import { Tooltip } from "react-tooltip";
 
 class Homepage extends Component {
   constructor() {
@@ -19,12 +21,20 @@ class Homepage extends Component {
       if (selectedFile && fileType.includes(selectedFile.type)) {
         let reader = new FileReader();
 
-        reader.readAsDataURL(selectedFile);
         reader.onload = (e) => {
-          this.setState({ pdfFile: e.target.result });
+          const arrayBuffer = e.target.result;
+          const blob = new Blob([arrayBuffer], { type: "application/pdf" });
+          this.setState({ pdfFile: blob });
         };
+        reader.readAsArrayBuffer(selectedFile);
       } else {
+        Swal.fire({
+          icon: "error",
+          title: "Invalid File",
+          text: "Please select a valid PDF file.",
+        });
         this.setState({ pdfFile: null });
+        e.target.value = "";
       }
     } else {
       console.log("please select a file");
@@ -33,11 +43,16 @@ class Homepage extends Component {
 
   render() {
     return (
-      <div>
-        <h2>Upload PDF</h2>
-        <div className="display-container">
-          <div>
+      <div className="homepage-container">
+        <h3>Upload PDF ...</h3>
+        <div
+          className="display-container"
+          data-tooltip-id="upload-pdf"
+          data-tooltip-content="Upload PDF file"
+        >
+          <div className="file-input-box">
             <input
+              className="file-input"
               type="file"
               accept=".pdf"
               onChange={this.validatePDF.bind(this)}
@@ -45,7 +60,9 @@ class Homepage extends Component {
           </div>
         </div>
 
-        <Display pdfFile={this.state.pdfFile} image={this.props.image}/>
+        <Display pdfFile={this.state.pdfFile} image={this.props.image} />
+
+        <Tooltip id="upload-pdf" place="right" />
       </div>
     );
   }
