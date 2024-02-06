@@ -3,6 +3,7 @@ import logo from "../../Images/logo.jpg";
 import "./Header.scss";
 import { Tooltip } from "react-tooltip";
 import { FaDownload, FaFileUpload } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 export class Header extends Component {
   constructor() {
@@ -11,16 +12,23 @@ export class Header extends Component {
 
   handleImageChange = (e) => {
     const file = e.target.files[0];
-    const reader = new FileReader();
 
-    reader.onloadend = () => {
-      this.props.addImage({
-        url: reader.result,
-      });
-    };
+    if (file && file.type === "image/png") {
+      const reader = new FileReader();
 
-    if (file) {
+      reader.onloadend = () => {
+        this.props.addImage({
+          url: reader.result,
+        });
+      };
+
       reader.readAsDataURL(file);
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Image",
+        text: "Please select a valid PNG file.",
+      });
     }
   };
 
