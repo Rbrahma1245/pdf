@@ -1,7 +1,7 @@
 import { Component } from "react";
 import logo from "../../Images/logo.jpg";
 import "./Header.scss";
-
+import { Tooltip } from "react-tooltip";
 import { FaDownload, FaFileUpload } from "react-icons/fa";
 
 export class Header extends Component {
@@ -31,10 +31,15 @@ export class Header extends Component {
           <img src={logo} alt="logo" />
         </div>
         <div className="header-right">
-          <button className="upload">
+          <button
+            className="upload"
+            data-tooltip-id="upload-image"
+            data-tooltip-content="Upload PNG file"
+          >
+            <Tooltip id="upload-image" place="bottom" />
+
             <input
-              className="file-input "
-              style={{}}
+              className="file-input"
               type="file"
               onChange={this.handleImageChange.bind(this)}
             />

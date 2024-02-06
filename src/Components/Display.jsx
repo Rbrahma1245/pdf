@@ -37,14 +37,17 @@ class Display extends Component {
       const pdfBytes = new Uint8Array(await pdfFile.arrayBuffer());
       const pdfDoc = await PDFDocument.load(pdfBytes);
 
-      // Load the image
       // const imageBytes = await fetch(this.props.image.url).then((res) => res.arrayBuffer());
 
       // Embed the image
       const image = await pdfDoc.embedPng(this.props.image.url);
 
+      console.log(pdfDoc, "from pdf doc");
+
       pdfDoc.getPages().forEach((page) => {
         const { width, height } = page.getSize();
+
+        console.log(width, height, "from pdf");
 
         const x = this.state.imagePosition.x;
         const y = this.state.imagePosition.y;
