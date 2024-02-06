@@ -1,7 +1,7 @@
 import { Component } from "react";
 import "./Pdf/Pdf.scss";
 import Display from "./Display";
-// import Swal from "sweetalert2";
+import Swal from "sweetalert2";
 
 
 
@@ -27,14 +27,13 @@ class Homepage extends Component {
                 const blob = new Blob([arrayBuffer], { type: "application/pdf" });
                 this.setState({ pdfFile: blob });
             };
-
             reader.readAsArrayBuffer(selectedFile);
         } else {
-          // Swal.fire({
-          //   icon: 'error',
-          //   title: 'Invalid File',
-          //   text: 'Please select a valid PDF file.',
-          // });
+          Swal.fire({
+            icon: 'error',
+            title: 'Invalid File',
+            text: 'Please select a valid PDF file.',
+          });
             this.setState({ pdfFile: null });
             e.target.value = "";
         }

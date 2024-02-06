@@ -1,18 +1,17 @@
 import { Component } from "react";
-import { pdfjs } from 'react-pdf';
-import "./Pdf/Pdf.scss"
+import { pdfjs } from "react-pdf";
+import "./Display.scss";
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
-import { Document, Page } from 'react-pdf';
-import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
-import 'react-pdf/dist/esm/Page/TextLayer.css';
+import { Document, Page } from "react-pdf";
+import "react-pdf/dist/esm/Page/AnnotationLayer.css";
+import "react-pdf/dist/esm/Page/TextLayer.css";
 
-import { PDFDocument } from 'pdf-lib';
-import { saveAs } from 'file-saver';
+import { PDFDocument } from "pdf-lib";
+import { saveAs } from "file-saver";
 
 import Draggable from "react-draggable";
 import { Resizable } from "re-resizable";
-
 
 class Display extends Component {
   constructor() {
@@ -23,14 +22,14 @@ class Display extends Component {
       pageNumber: 1,
 
       imagePosition: { x: 200, y: 500 }, // Initial position
-      imageSize: { width: 200, height: 150 }, // Initial size
+      imageSize: { width: 100, height: 80 }, // Initial size
     };
   }
   async handleDownloadPDF() {
     const { pdfFile } = this.props;
 
     if (!pdfFile) {
-      console.error('PDF file is not available.');
+      console.error("PDF file is not available.");
       return;
     }
 
@@ -39,10 +38,10 @@ class Display extends Component {
       const pdfDoc = await PDFDocument.load(pdfBytes);
 
       // Load the image
-      const imageBytes = await fetch(this.props.image.url).then((res) => res.arrayBuffer());
+      // const imageBytes = await fetch(this.props.image.url).then((res) => res.arrayBuffer());
 
       // Embed the image
-      const image = await pdfDoc.embedJpg(this.props.image.url);
+      const image = await pdfDoc.embedPng(this.props.image.url);
 
       pdfDoc.getPages().forEach((page) => {
         const { width, height } = page.getSize();
@@ -61,17 +60,18 @@ class Display extends Component {
       });
 
       const modifiedPdfBytes = await pdfDoc.save();
-      saveAs(new Blob([modifiedPdfBytes], { type: 'application/pdf' }), 'downloaded_pdf_with_image.pdf');
+      saveAs(
+        new Blob([modifiedPdfBytes], { type: "application/pdf" }),
+        "downloaded_pdf_with_image.pdf"
+      );
     } catch (error) {
-      console.error('Error adding image to PDF:', error);
+      console.error("Error adding image to PDF:", error);
     }
-  };
-
+  }
 
   onDocumentLoadSuccess({ numPages }) {
     this.setState({ numPages: numPages });
   }
-
 
   handleNextPage() {
     this.setState((prevState) => ({
@@ -99,24 +99,29 @@ class Display extends Component {
       imageSize: {
         width: delta.width,
         height: delta.height,
-      }
-    })
+      },
+    });
   };
 
   render() {
-    console.log(this.props.pdfFile);
+    let { pdfFile, image } = this.props;
+    let { numPages, pageNumber } = this.state;
 
     return (
       <div style={{ width: "80%" }}>
-
-        {this.props.pdfFile ? (
+        {pdfFile ? (
           <>
             <div className="container-box">
-              <Document file={this.props.pdfFile} onLoadSuccess={this.onDocumentLoadSuccess.bind(this)}>
-                <Page pageNumber={this.state.pageNumber} >
-
-                  {this.props.image?.url == null ? null : (
-                    <Draggable bounds="parent" onDrag={this.handleImageDrag.bind(this)}>
+              <Document
+                file={pdfFile}
+                onLoadSuccess={this.onDocumentLoadSuccess.bind(this)}
+              >
+                <Page pageNumber={pageNumber}>
+                  {image?.url == null ? null : (
+                    <Draggable
+                      bounds="parent"
+                      onDrag={this.handleImageDrag.bind(this)}
+                    >
                       <Resizable
                         onResize={this.handleImageResize.bind(this)}
                         defaultSize={{
@@ -124,7 +129,7 @@ class Display extends Component {
                           height: 150,
                         }}
                         style={{
-                          background: `url(${this.props.image.url})`,
+                          background: `url(${image.url})`,
                           backgroundSize: "contain",
                           backgroundRepeat: "no-repeat",
                           position: "absolute",
@@ -142,20 +147,33 @@ class Display extends Component {
 
                 <div className="box-footer">
                   <p>
-                    Page {this.state.pageNumber} of {this.state.numPages}
+                    Page {pageNumber} of {numPages}
                   </p>
                   <div>
-                    <button className="prevbtn" onClick={this.handlePrevPage.bind(this)} disabled={this.state.pageNumber === 1}>Prev</button>
-                    <button className="nextbtn" onClick={this.handleNextPage.bind(this)} disabled={this.state.pageNumber == this.state.numPages}>Next</button>
-
+                    <button
+                      className="prevbtn"
+                      onClick={this.handlePrevPage.bind(this)}
+                      disabled={pageNumber === 1}
+                    >
+                      Prev
+                    </button>
+                    <button
+                      className="nextbtn"
+                      onClick={this.handleNextPage.bind(this)}
+                      disabled={pageNumber === numPages}
+                    >
+                      Next
+                    </button>
                   </div>
-
                 </div>
               </Document>
             </div>
 
-            <div className="downloadbtn-box" >
-              <button className="downloadbtn" onClick={this.handleDownloadPDF.bind(this)}>
+            <div className="downloadbtn-box">
+              <button
+                className="downloadbtn"
+                onClick={this.handleDownloadPDF.bind(this)}
+              >
                 Download PDF
               </button>
             </div>
@@ -163,9 +181,7 @@ class Display extends Component {
         ) : (
           <>NO PDF</>
         )}
-
       </div>
-
     );
   }
 }
