@@ -39,7 +39,7 @@ class Display extends Component {
 
       if (image && image.url) {
         // Embed the image
-        const image = await pdfDoc.embedPng(image.url);
+        const attachedImage = await pdfDoc.embedPng(image.url);
 
         pdfDoc.getPages().forEach((page) => {
           const { width, height } = page.getSize();
@@ -51,7 +51,7 @@ class Display extends Component {
           const imageWidth = this.state.imageSize.width;
           const imageHeight = this.state.imageSize.height;
 
-          page.drawImage(image, {
+          page.drawImage(attachedImage, {
             x: x,
             y: y,
             width: imageWidth,
